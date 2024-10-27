@@ -2,8 +2,8 @@
             margin: 0;
             padding: 0;
             font-family: 'Montserrat', sans-serif;
-            background-color: white;
-            /*background-image: src("fond-texture-elegant-blanc_23-2148445781.jpg.avif");*/
+            background-color: white; 
+           /* background-image: src("image/fond-texture-elegant-blanc_23-2148445781.jpg.avif"); */
             color:darkgray;
         }
 
@@ -15,17 +15,17 @@
         /* Ligne horizontale pour le pendu */
         #drawing-container {
             position: relative;
-            margin: 20px 0;
-            height: 100px;
+            margin: 51px 0;
+            height: 350px;
         }
 
         #horizontal-line {
             position: absolute;
-            top: 80%;
+            top: 70%;
             left: 0;
             width: 100%;
             height: 2px;
-            background-color: gray;
+            background-color: red;
         }
 
             /* Positionnement de la potence (gallows) par rapport à la ligne */
@@ -49,7 +49,7 @@
 
         header {
            background-color: white;
-            /*background-image: src("fond-texture-elegant-blanc_23-2148445781.jpg.avif");*/
+            /*background-image: src("image/fond-texture-elegant-blanc_23-2148445781.jpg.avif");*/
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: fixed;
             width: 100%;
@@ -96,7 +96,7 @@
         }
 
         .hero {
-            background-image: url('https://source.unsplash.com/random/1600x900/?luxury');
+            background-image: url('https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg');
             background-size: cover;
             background-position: center;
             height: 80vh;
@@ -136,6 +136,8 @@
         .game-section {
             padding: 80px 0;
             text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color:white;
         }
 
         #word {
