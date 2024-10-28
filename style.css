@@ -136,7 +136,7 @@
         .game-section {
             padding: 80px 0;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 30px rgba(0,0,0,0.1);
             background-color:white;
         }
 
