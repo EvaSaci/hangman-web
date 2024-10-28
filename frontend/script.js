@@ -8,7 +8,7 @@
 let chosenWord = ""; // mot sélectionné pour la partie
 let displayWord = ""; // mot affiché avec des lettres masquées
 let essaie = 0; // nb d'essaie / fautes
-let maxEssaie = 6; // nb max d'essaie ou de faute
+let maxEssaie; // nb max d'essaie ou de faute
 let isGameOver = false; // perdu ?
 let usedLetters = new Set(); // Ajout d'un Set pour suivre les lettres utilisées
 let wrongLetters = new Set(); // le set des lettres incorect
@@ -33,6 +33,7 @@ const words = {
 
 // Fonction d'initialisation du jeu modifiée
 function initGame() {
+    resetGame();
     const category = document.getElementById("category-select").value;
     const wordList = words[category];
     chosenWord = wordList[Math.floor(Math.random() * wordList.length)];
