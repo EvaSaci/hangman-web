@@ -2,15 +2,16 @@
 // script by Damien, Eva, Guilhem et Lois
 // dead line : 12/11/2024
 // avancement --> 75%
+// ici bas : script uniquement test et non final
 
 // Définition des variables globales
-let currentUser = null; // utilisateur connecté
 let chosenWord = ""; // mot sélectionné pour la partie
 let displayWord = ""; // mot affiché avec des lettres masquées
 let essaie = 0; // nb d'essaie / fautes
 let maxEssaie = 6; // nb max d'essaie ou de faute
 let isGameOver = false; // perdu ?
 let usedLetters = new Set(); // Ajout d'un Set pour suivre les lettres utilisées
+let wrongLetters = new Set(); // le set des lettres incorect
 
 // Catégories des mots
 const words = {
@@ -20,7 +21,7 @@ const words = {
     fruits: ["pomme", "banane", "fraise", "tomate", "carotte", "poire", "cerise", "orange", "raisin", "mangue", "kiwi", "ananas", "melon", "papaye", "pêche", "prune", "abricot"],
     sports: ["football", "basketball", "tennis", "natation", "rugby", "boxe", "golf", "athlétisme", "volleyball", "cyclisme", "escalade", "hockey", "surf", "karate", "judo", "escrime", "badminton"],
     films: ["titanic", "avatar", "inception", "gladiator", "starwars", "matrix", "interstellar", "le parrain", "jurassic park", "terminator", "la la land", "avengers", "batman", "seigneur des anneaux", "harry potter", "forrest gump", "pulp fiction"],
-    historique: ["napoleon", "einstein", "gandhi", "cleopatre", "lincoln", "jeanne d'arc", "alexandre le grand", "winston churchill", "louis XIV", "jules césar", "charlemagne", "lénine", "martin luther king", "nelson mandela", "marie curie", "galilée", "platon"],
+    historique: ["napoleon", "einstein", "gandhi", "cleopatre", "lincoln", "louis XIV", "jules césar", "charlemagne", "lénine", "martin luther king", "nelson mandela", "marie curie", "galilée", "platon"],
     marine: ["requin", "dauphin", "baleine", "pieuvre", "meduse", "crabe", "morue", "poisson-clown", "raie", "phoque", "manchot", "otarie", "mouette", "tortue marine", "corail", "anémone", "calmar"],
     villes: ["paris", "londres", "newyork", "tokyo", "sydney", "rome", "madrid", "berlin", "moscou", "dubai", "singapour", "lisbonne", "rio de janeiro", "los angeles", "buenos aires", "istanbul", "cape town"],
     marques: ["nike", "apple", "samsung", "cocacola", "google", "amazon", "microsoft", "adidas", "sony", "toyota", "bmw", "mercedes", "intel", "facebook", "louis vuitton", "hermes", "chanel"],
@@ -30,39 +31,6 @@ const words = {
     autre: ["sérénité", "explosion", "gourmandise", "mystère", "illusion", "réflexion", "invisible", "paradoxe", "vitesse", "profondeur", "évasion", "mouvement", "équilibre", "renaissance", "discrétion", "éclair", "résonance", "crépuscule", "labyrinthe", "cascade", "liberté", "étincelle", "fragment", "mirage", "harmonie", "persévérance", "voyage", "abîme", "spirale", "souvenir", "synergie", "vertige", "élévation", "transformation", "murmure", "labyrinthe", "désir", "énergie", "sublime", "chimère", "lueur", "fantaisie"]
 };
 
-// Système de gestion des utilisateurs
-const users = {}; // liste des utilisateurs enregistrés
-
-function createUser(username, password) {
-    if (users[username]) {
-        return false; // L'utilisateur existe déjà
-    }
-    users[username] = {
-        password: password, // mot de passe utilisateur
-        stats: { // statistiques de jeu de l'utilisateur
-            gamesPlayed: 0,
-            gamesWon: 0,
-            totalEssaie: 0,
-            bestStreak: 0,
-            currentStreak: 0,
-            categoryStats: {}
-        }
-    };
-    return true;
-}
-
-function login(username, password) {
-    if (users[username] && users[username].password === password) {
-        currentUser = username; // utilisateur connecté
-        return true;
-    }
-    return false;
-}
-
-function logout() {
-    currentUser = null; // réinitialisation de l'utilisateur connecté
-}
-
 // Fonction d'initialisation du jeu modifiée
 function initGame() {
     const category = document.getElementById("category-select").value;
@@ -71,7 +39,8 @@ function initGame() {
     displayWord = "_".repeat(chosenWord.length);
     essaie = 0;
     isGameOver = false;
-    usedLetters.clear(); // Réinitialiser les lettres utilisées
+    usedLetters.clear();
+    wrongLetters.clear(); // Réinitialiser les lettres incorrectes
     updateDisplay();
 }
 
@@ -79,6 +48,13 @@ function initGame() {
 function updateDisplay() {
     document.getElementById("word").textContent = displayWord.split("").join(" ");
     document.getElementById("hangman").getElementsByTagName("img")[0].src = `hangman${essaie}.png`;
+    
+    // Affiche les lettres incorrectes
+    const wrongLettersContainer = document.getElementById("wrong-letters"); 
+    if (wrongLettersContainer) {
+        wrongLettersContainer.textContent = `Lettres incorrectes : ${Array.from(wrongLetters).join(', ')}`;
+    }
+    
     document.getElementById("message").textContent = isGameOver ? 
         (displayWord === chosenWord ? "Félicitations, vous avez gagné !" : `Vous avez perdu ! Le mot était : ${chosenWord}`) 
         : "";
@@ -101,6 +77,7 @@ function guessLetter(letter) {
     
     if (!foundLetter) {
         essaie++;
+        wrongLetters.add(letter); // Ajouter la lettre aux lettres incorrectes
     }
     
     displayWord = tempDisplayWord.join('');
@@ -221,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function() {
     categoriesLink.addEventListener("click", showCategoriesModal);
     difficultyLink.addEventListener("click", showDifficultyModal);
     statsLink.addEventListener("click", showStatsModal);
-    accountLink.addEventListener("click", showAccountModal);
     startGameBtn.addEventListener("click", startGame);
     resetBtn.addEventListener("click", resetGame);
 
@@ -253,13 +229,10 @@ function showStatsModal() {
     updateStatsDisplay();
 }
 
-function showAccountModal() {
-    // Implémentation du modal de compte utilisateur
-}
-
 function startGame() {
     showGameSection();
     resetGame();
+    updateDisplay();
 }
 
 function resetGame() {
@@ -343,50 +316,9 @@ function showStatsModal() {
     modal.style.display = "block";
 }
 
-function showAccountModal() {
-    const accountContent = currentUser ? `
-        <p>Connecté en tant que ${currentUser}</p>
-        <button id="logout-btn">Se déconnecter</button>
-    ` : `
-        <input type="text" id="username" placeholder="Nom d'utilisateur">
-        <input type="password" id="password" placeholder="Mot de passe">
-        <button id="login-btn">Se connecter</button>
-        <button id="register-btn">S'inscrire</button>
-    `;
-    const modal = createModal("Compte", accountContent);
-    modal.style.display = "block";
 
-    if (currentUser) {
-        document.getElementById("logout-btn").onclick = function() {
-            logout();
-            modal.style.display = "none";
-            showAccountModal(); // Rafraîchir le modal
-        }
-    } else {
-        document.getElementById("login-btn").onclick = function() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            if (login(username, password)) {
-                modal.style.display = "none";
-                alert("Connexion réussie !");
-            } else {
-                alert("Nom d'utilisateur ou mot de passe incorrect.");
-            }
-        }
-        document.getElementById("register-btn").onclick = function() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            if (createUser(username, password)) {
-                modal.style.display = "none";
-                alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
-            } else {
-                alert("Ce nom d'utilisateur est déjà pris.");
-            }
-        }
-    }
-}
 // Ajout de styles pour les modals
-const style = document.createElement('style');
+/*const style = document.createElement('style');
 style.textContent = `
     .modal {
         display: none;
@@ -419,7 +351,7 @@ style.textContent = `
         text-decoration: none;
         cursor: pointer;
     }
-`;
+`; */
 document.head.appendChild(style);
 
 // Initialisation du jeu et des événements
@@ -429,7 +361,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("categories-link").addEventListener("click", showCategoriesModal);
     document.getElementById("difficulty-link").addEventListener("click", showDifficultyModal);
     document.getElementById("stats-link").addEventListener("click", showStatsModal);
-    document.getElementById("account-link").addEventListener("click", showAccountModal);
 
     initGame();
 });
