@@ -1,7 +1,7 @@
 // script en cours...
 // script by Damien, Eva, Guilhem et Lois
 // dead line : 12/11/2024
-// avancement --> 75%
+// avancement --> 75% /\ plus que à mettre en golang
 // ici bas : script uniquement test et non final
 
 // Définition des variables globales
@@ -271,7 +271,6 @@ function createModal(title, content) {
             modal.style.display = "none";
         }
     }
-
     return modal;
 }
 
@@ -324,7 +323,6 @@ function showStatsModal() {
     const modal = createModal("Statistiques", statsContent);
     modal.style.display = "block";
 }
-
 
 // Ajout de styles pour les modals
 const style = document.createElement('style');
