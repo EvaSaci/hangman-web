@@ -95,7 +95,7 @@
             font-size: 28px;
             font-weight: bold;
         }
-        .close:hover,
+        .close:hover, 
         .close:focus {
             color: black;
             text-decoration: none;
@@ -144,6 +144,7 @@
             justify-content: center;
             text-align: center;
             color: white;
+            box-shadow: 0 2px 30px rgba(0,0,0,0.1);
         }
 
         .hero-content {

@@ -186,13 +186,16 @@ function animateHangman(essaie) {
 
 // Event listeners et initialisation
 document.addEventListener("DOMContentLoaded", function() {
+    const MainLink = document.getElementById("main-link");
     const playLink = document.getElementById("play-link");
     const categoriesLink = document.getElementById("categories-link");
     const difficultyLink = document.getElementById("difficulty-link");
     const statsLink = document.getElementById("stats-link");
-    const accountLink = document.getElementById("account-link");
+    // const accountLink = document.getElementById("account-link");
     const startGameBtn = document.getElementById("start-game");
     const resetBtn = document.getElementById("reset-btn");
+
+    MainLink.addEventListener("click", showHeroSection)
 
     playLink.addEventListener("click", showGameSection);
     categoriesLink.addEventListener("click", showCategoriesModal);
@@ -210,6 +213,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     initGame();
 });
+
+function showHeroSection() {
+    document.querySelector(".hero").style.display = "flex";
+    document.getElementById("game-container").style.display = "none";
+}
 
 function showGameSection() {
     document.querySelector(".hero").style.display = "none";
