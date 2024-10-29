@@ -192,7 +192,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const categoriesLink = document.getElementById("categories-link");
     const difficultyLink = document.getElementById("difficulty-link");
     const statsLink = document.getElementById("stats-link");
-    // const accountLink = document.getElementById("account-link");
     const startGameBtn = document.getElementById("start-game");
     const resetBtn = document.getElementById("reset-btn");
 
