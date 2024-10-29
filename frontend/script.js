@@ -15,16 +15,6 @@ let wrongLetters = new Set(); // le set des lettres incorect
 
 // Catégories des mots
 const words = {
-    animaux: ["chat", "chien", "lion", "tigre", "elephant", "requin", "singe", "loup", "girafe", "zèbre", "panthère", "hippopotame", "panda", "koala", "aigle", "crocodile", "serpent", "chameau"],
-    technologie: ["ordinateur", "javascript", "internet", "robotique", "intelligence", "algorithme", "blockchain", "cybersecurité", "réalité augmentée", "intelligence artificielle", "cloud", "quantique", "drone", "nanotechnologie"],
-    pays: ["france", "canada", "bresil", "italie", "japon", "australie", "chine", "allemagne", "espagne", "mexique", "russie", "inde", "afrique du sud", "argentine", "égypte", "corée du sud", "grèce"],
-    fruits: ["pomme", "banane", "fraise", "tomate", "carotte", "poire", "cerise", "orange", "raisin", "mangue", "kiwi", "ananas", "melon", "papaye", "pêche", "prune", "abricot"],
-    sports: ["football", "basketball", "tennis", "natation", "rugby", "boxe", "golf", "athlétisme", "volleyball", "cyclisme", "escalade", "hockey", "surf", "karate", "judo", "escrime", "badminton"],
-    films: ["titanic", "avatar", "inception", "gladiator", "starwars", "matrix", "interstellar", "le parrain", "jurassic park", "terminator", "la la land", "avengers", "batman", "seigneur des anneaux", "harry potter", "forrest gump", "pulp fiction"],
-    historique: ["napoleon", "einstein", "gandhi", "cleopatre", "lincoln", "louis XIV", "jules césar", "charlemagne", "lénine", "martin luther king", "nelson mandela", "marie curie", "galilée", "platon"],
-    marine: ["requin", "dauphin", "baleine", "pieuvre", "meduse", "crabe", "morue", "poisson-clown", "raie", "phoque", "manchot", "otarie", "mouette", "tortue marine", "corail", "anémone", "calmar"],
-    villes: ["paris", "londres", "newyork", "tokyo", "sydney", "rome", "madrid", "berlin", "moscou", "dubai", "singapour", "lisbonne", "rio de janeiro", "los angeles", "buenos aires", "istanbul", "cape town"],
-    marques: ["nike", "apple", "samsung", "cocacola", "google", "amazon", "microsoft", "adidas", "sony", "toyota", "bmw", "mercedes", "intel", "facebook", "louis vuitton", "hermes", "chanel"],
     superheros: ["superman", "batman", "spiderman", "ironman", "hulk", "thor", "wonder woman", "flash", "aquaman", "black panther", "deadpool", "captain america", "docteur strange", "green lantern", "wolverine", "cyclope", "magneto"],
     instruments: ["guitare", "piano", "violon", "batterie", "flute", "saxophone", "trompette", "clarinette", "harmonica", "ukulélé", "harpe", "banjo", "accordéon", "xylophone", "tuba", "violoncelle", "basson"],
     metiers: ["medecin", "avocat", "enseignant", "plombier", "policier", "ingenieur", "journaliste", "architecte", "pharmacien", "chirurgien", "psychologue", "chef cuisinier", "dentiste", "comptable", "vétérinaire", "électricien", "photographe"],
