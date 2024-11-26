@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HangMan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>HangMan</h1>
+        <!-- Ajout des boutons de difficulté -->
+        <div class="difficulty-buttons">
+            <a href="/?difficulty=facile" class="difficulty-btn {{if eq .Difficulty "facile"}}active{{end}}">Facile</a>
+            <a href="/?difficulty=moyen" class="difficulty-btn {{if eq .Difficulty "moyen"}}active{{end}}">Moyen</a>
+            <a href="/?difficulty=difficile" class="difficulty-btn {{if eq .Difficulty "difficile"}}active{{end}}">Difficile</a>
+        </div>
+    </header>
+
+    <div class="game-container">
+        <div>Points de vie : {{.RemainingTries}}</div>
+        <div class="difficulty-indicator">Niveau : {{.Difficulty}}</div>
+        <div class="revealed-letter">
+            Lettre révélée au début : {{.RevealedLetter}}
+        </div>
+        <div class="masked-word">{{.Motsmasque}}</div>
+        
+        {{if eq .GameStatus "en_cours"}}
+        <form class="guess-form" action="/guess" method="POST">
+            <input type="text" name="letter" maxlength="1" required>
+            <button type="submit">Deviner</button>
+        </form>
+        {{if .WrongLetters}}
+        <div class="wrong-letters">
+            Mauvaises lettres : {{range .WrongLetters}}{{.}} {{end}}
+        </div>
+        {{end}}
+        {{end}}
+    </div>
+
+    <!-- Pop-up de victoire -->
+    <div id="victoryPopup" class="popup victory">
+        <h2>BRAVO !</h2>
+        <p>Vous avez deviné le mot !</p>
+        <button onclick="closePopup('victory')">Nouvelle partie</button>
+    </div>
+
+    <!-- Pop-up de défaite -->
+    <div id="defeatPopup" class="popup defeat">
+        <h2>Perdu !</h2>
+        <p>Le mot était : {{.Mots}}</p>
+        <button onclick="closePopup('defeat')">Nouvelle partie</button>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <footer>
+        <p>&copy; 2024 hangMan. Tous droits réservés.</p>
+        <p>by. Damien, Eva, Guilhem et Lois</p>
+    </footer>
+
+    <script>
+        {{if eq .GameStatus "gagne"}}
+        document.getElementById('victoryPopup').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        {{end}}
+
+        {{if eq .GameStatus "perdu"}}
+        document.getElementById('defeatPopup').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        {{end}}
+
+        function closePopup(type) {
+            const difficulty = '{{.Difficulty}}';
+            document.getElementById(type + 'Popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            window.location.href = '/?difficulty=' + difficulty;
+        }
+    </script>
+</body>
+</html>
