@@ -1,58 +1,83 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <link rel="stylesheet" href="style.css">
-    
+    <link rel="stylesheet" href="/static/style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HangMan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <nav class="container">
-            <li><a href="#" id="main-link" class="logo">HangMan</a></li>
-            <ul class="nav-links">
-                <li><a href="#" id="play-link">Jouer</a></li>
-                <li><a href="#" id="categories-link">Catégories</a></li>
-                <li><a href="#" id="difficulty-link">Difficulté</a></li>
-                <li><a href="#" id="stats-link">Statistiques</a></li>
-            </ul>
-        </nav>
+        <h1>HangMan</h1>
+        <!-- Ajout des boutons de difficulté -->
+        <div class="difficulty-buttons">
+            <a href="/?difficulty=facile" class="difficulty-btn {{if eq .Difficulty "facile"}}active{{end}}">Facile</a>
+            <a href="/?difficulty=moyen" class="difficulty-btn {{if eq .Difficulty "moyen"}}active{{end}}">Moyen</a>
+            <a href="/?difficulty=difficile" class="difficulty-btn {{if eq .Difficulty "difficile"}}active{{end}}">Difficile</a>
+        </div>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Bienvenue au HangMan</h1>
-                <p>Découvrez le jeu du pendu dans une version unique et fantastique.</p>
-                <a href="#" class="btn" id="start-game">Commencer à jouer</a>
-            </div>
-        </section>
+    <div class="game-container">
+        <div>Points de vie : {{.RemainingTries}}</div>
+        <div class="difficulty-indicator">Niveau : {{.Difficulty}}</div>
+        <div class="revealed-letter">
+            Lettre révélée au début : {{.RevealedLetter}}
+        </div>
+        <div class="masked-word">{{.MaskedWord}}</div>
+        
+        {{if eq .GameStatus "en_cours"}}
+        <form class="guess-form" action="/guess" method="POST">
+            <input type="text" name="letter" maxlength="1" required>
+            <button type="submit">Deviner</button>
+        </form>
+        {{if .WrongLetters}}
+        <div class="wrong-letters">
+            Mauvaises lettres : {{range .WrongLetters}}{{.}} {{end}}
+        </div>
+        {{end}}
+        {{end}}
+    </div>
 
-        <section class="game-section container" id="game-container" style="display: none;">
-            <h2>HangMan</h2>
-            
-            <div id="word">_ _ _ _ _</div>
-            <div id="message"></div>
-            <div id="wrong-letters" class="wrong-letters"></div>
-            <button class="btn" id="reset-btn">Recommencer</button>
-            <div id="drawing-container">
-                <div id="horizontal-line"></div>
-                <div id="hangman-gallows">
-                    <div id="hangman">
-                        <img src="hangman0.png" alt="">
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+    <!-- Pop-up de victoire -->
+    <div id="victoryPopup" class="popup victory">
+        <h2>BRAVO !</h2>
+        <p>Vous avez deviné le mot !</p>
+        <button onclick="closePopup('victory')">Nouvelle partie</button>
+    </div>
+
+    <!-- Pop-up de défaite -->
+    <div id="defeatPopup" class="popup defeat">
+        <h2>Perdu !</h2>
+        <p>Le mot était : {{.Word}}</p>
+        <button onclick="closePopup('defeat')">Nouvelle partie</button>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
 
     <footer>
         <p>&copy; 2024 hangMan. Tous droits réservés.</p>
         <p>by. Damien, Eva, Guilhem et Lois</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        {{if eq .GameStatus "gagne"}}
+        document.getElementById('victoryPopup').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        {{end}}
+
+        {{if eq .GameStatus "perdu"}}
+        document.getElementById('defeatPopup').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        {{end}}
+
+        function closePopup(type) {
+            const difficulty = '{{.Difficulty}}';
+            document.getElementById(type + 'Popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            window.location.href = '/?difficulty=' + difficulty;
+        }
+    </script>
 </body>
 </html>

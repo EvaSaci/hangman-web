@@ -46,15 +46,6 @@ function showCategoriesModal() {
         modal.style.display = "none";
     }
 }
-
-
-
-
-
-
-
-
-
 package main
 
 import (
