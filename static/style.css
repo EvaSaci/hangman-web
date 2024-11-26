@@ -6,7 +6,7 @@
     --success-color: #22c55e;
     --error-color: #ef4444;
     --background: #f8fafc;
-    --text-color: #1e293b;
+    --text-color: #3b3b3b;
     --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
   
@@ -27,7 +27,8 @@
   /* Header styles */
   header {
     padding: 2rem 0;
-    background: linear-gradient(135deg, var(--color-test), var(--background), var(--color-test));
+    /*background: #3b3b3b;*/
+    background: linear-gradient(135deg, var(--color-test), var(--background));
     margin-bottom: 2rem;
     text-align: center;
   }

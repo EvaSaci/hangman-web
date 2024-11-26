@@ -24,7 +24,7 @@
         <div class="revealed-letter">
             Lettre révélée au début : {{.RevealedLetter}}
         </div>
-        <div class="masked-word">{{.MaskedWord}}</div>
+        <div class="masked-word">{{.Motsmasque}}</div>
         
         {{if eq .GameStatus "en_cours"}}
         <form class="guess-form" action="/guess" method="POST">
@@ -49,7 +49,7 @@
     <!-- Pop-up de défaite -->
     <div id="defeatPopup" class="popup defeat">
         <h2>Perdu !</h2>
-        <p>Le mot était : {{.Word}}</p>
+        <p>Le mot était : {{.Mots}}</p>
         <button onclick="closePopup('defeat')">Nouvelle partie</button>
     </div>
 
