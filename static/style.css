@@ -27,8 +27,8 @@
   /* Header styles */
   header {
     padding: 2rem 0;
-    /*background: #3b3b3b;*/
-    background: linear-gradient(135deg, var(--color-test), var(--background));
+    background-color: var(--color-test);
+    /*background: linear-gradient(135deg, var(--color-test), var(--background));*/
     margin-bottom: 2rem;
     text-align: center;
   }
@@ -165,11 +165,11 @@
   
   /* Footer */
   footer {
-    margin-top: 3rem;
+    margin-top: 6rem; 
     padding: 2rem;
     text-align: center;
     color: #fff;
-    background: linear-gradient(135deg, var(--color-test), var(--background));
+    background-color: var(--color-test);
   }
   
   /* Animations */
@@ -201,7 +201,6 @@
       padding: 2rem;
     }
   }
-  /* Ajoutez ceci à votre fichier style.css existant */
 
 .difficulty-buttons {
   display: flex;

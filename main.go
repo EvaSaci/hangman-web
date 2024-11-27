@@ -68,7 +68,6 @@ func loadAllWordLists() {
 	}
 }
 
-
 func initGame(difficulty string) {
 	if !game.GameInitialized || game.Difficulty != difficulty {
 		rand.Seed(time.Now().UnixNano())
@@ -176,11 +175,11 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		if difficulty == "" {
 			difficulty = "moyen" // Niveau par défaut
 		}
-		
+
 		if game.GameStatus == "gagne" || game.GameStatus == "perdu" || game.Difficulty != difficulty {
 			game.GameInitialized = false
 		}
-		
+
 		initGame(difficulty)
 	}
 
