@@ -2,31 +2,6 @@ package main
 
 // Importation des packages Go nécessaires pour diverses fonctionnalités
 import (
-<<<<<<< HEAD
-	"bufio"
-	"flag"
-	"fmt"
-	"math/rand"
-	"os"
-	"strings"
-	"time"
-	"unicode"
-
-	"github.com/common-nighthawk/go-figure"
-)
-
-// Déclaration de difficulte
-type diff int
-
-// Déclaration des constantes pour la difficulté
-const (
-	facile    diff = iota // mode facile
-	moyen     diff = iota // mode moyen
-	difficile diff = iota // mode difficile
-	yann      diff = iota // mode yann : mode caché
-	raciste   diff = iota // mode raciste : mode caché
-	h              = iota // mode HELP
-=======
 	"bufio" // Pour lire des fichiers ligne par ligne
 	"fmt"
 	"html/template" // Pour rendre des modèles HTML
@@ -37,7 +12,6 @@ const (
 	"strings"       // Pour la manipulation de chaînes de caractères
 	"time"          // Pour initialiser le générateur de nombres aléatoires
 	"unicode"
->>>>>>> 0c146cc933a6d960a9877620bd98dc89ada9e875
 )
 
 // Structure HangmanGame définit l'état et les propriétés d'un jeu du Pendu
