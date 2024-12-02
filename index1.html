@@ -1,0 +1,25 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HangMan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header">
+        <h1>HangMan</h1>
+    </div>
+        <!-- Ajout des boutons de difficulté -->
+        <div class="difficulty-buttons">
+            <a href="/?difficulty=facile" class='difficulty-btn {{if eq .Difficulty "facile"}}active{{end}}'>Facile</a>
+            <a href="/?difficulty=moyen" class='difficulty-btn {{if eq .Difficulty "moyen"}}active{{end}}'>Moyen</a>
+            <a href="/?difficulty=difficile" class='difficulty-btn {{if eq .Difficulty "difficile"}}active{{end}}'>Difficile</a>
+        </div>
+    </header>
+</body>
+</html>

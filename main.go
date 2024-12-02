@@ -2,7 +2,8 @@ package main
 
 // Importation des packages Go nécessaires pour diverses fonctionnalités
 import (
-	"bufio"         // Pour lire des fichiers ligne par ligne
+	"bufio" // Pour lire des fichiers ligne par ligne
+	"fmt"
 	"html/template" // Pour rendre des modèles HTML
 	"log"           // Pour enregistrer des erreurs et des informations
 	"math/rand"     // Pour générer des nombres aléatoires
@@ -10,6 +11,7 @@ import (
 	"os"            // Pour les opérations sur les fichiers
 	"strings"       // Pour la manipulation de chaînes de caractères
 	"time"          // Pour initialiser le générateur de nombres aléatoires
+	"unicode"
 )
 
 // Structure HangmanGame définit l'état et les propriétés d'un jeu du Pendu
@@ -24,6 +26,7 @@ type HangmanGame struct {
 	RevealedLetter  string   // Une lettre révélée au début du jeu
 	GameInitialized bool     // Indicateur pour vérifier si le jeu est initialisé
 	Difficulty      string   // Niveau de difficulté du jeu
+	State           string
 }
 
 // Variables globales pour le jeu
@@ -167,15 +170,27 @@ func revealRandomLetter() string {
 
 	return ""
 }
+func valide(input string) bool {
+	for _, char := range input {
+		if !unicode.IsLetter(char) {
+			return false
+		}
+	}
+	return true
+}
 
 // Fonction pour gérer une tentative de devinette
 func handleGuess(letter string) {
 	// Conversion de la lettre en minuscules
 	letter = strings.ToLower(letter)
 
+	if !valide(letter) {
+		//game.GameStatus = "test"
+		return // Ignorer les caractères spéciaux sans faire perdre de vie
+	}
 	// Vérification si la lettre a déjà été devinée
 	if contains(game.GuessedLetters, letter) {
-		return
+		fmt.Printf("ttt")
 	}
 
 	// Ajout de la lettre à la liste des lettres devinées
@@ -230,26 +245,49 @@ func contains(slice []string, item string) bool {
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	// Gestion de la requête GET
 	if r.Method == "GET" {
+
+		hangEv()
+		fmt.Println("state")
+		fmt.Println(game.State)
+		fmt.Println(game.RemainingTries)
 		// Récupération du niveau de difficulté
 		difficulty := r.URL.Query().Get("difficulty")
+
+		// Si aucune difficulté n'est spécifiée
 		if difficulty == "" {
-			difficulty = "moyen" // Niveau par défaut
+			// Si un jeu est déjà en cours, conserver son niveau de difficulté
+			if game.GameInitialized {
+				difficulty = game.Difficulty
+			} else {
+				// Sinon, utiliser le niveau moyen par défaut
+				difficulty = "moyen"
+			}
+		}
+		log.Printf("Game Status: %s", game.GameStatus)
+		log.Printf("Difficulty: %s", difficulty)
+		// Vérification pour réinitialiser le jeu
+		if !game.GameInitialized ||
+			game.GameStatus == "gagne" ||
+			game.GameStatus == "perdu" ||
+			game.Difficulty != difficulty {
+			initGame(difficulty)
+		}
+		// In your handleGuess function
+		if game.Motsmasque == game.Mots {
+			game.GameStatus = "gagne" // Ensure it's lowercase
+			game.RemainingTries = game.MaxTries
 		}
 
-		// Réinitialisation du jeu si nécessaire
-		if game.GameStatus == "gagne" || game.GameStatus == "perdu" || game.Difficulty != difficulty {
-			game.GameInitialized = false
+		// And when the player loses
+		if game.RemainingTries == 0 {
+			game.GameStatus = "perdu" // Ensure it's lowercase
 		}
-
-		// Initialisation du jeu
-		initGame(difficulty)
 	}
 
 	// Chargement et exécution du template HTML
 	tmpl := template.Must(template.ParseFiles("index.html"))
 	err := tmpl.Execute(w, game)
 	if err != nil {
-		// Gestion des erreurs de template
 		log.Printf("Erreur template: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -260,6 +298,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 func guessHandler(w http.ResponseWriter, r *http.Request) {
 	// Gestion de la requête POST
 	if r.Method == "POST" {
+		hangEv()
 		r.ParseForm()
 		// Récupération de la lettre devinée
 		letter := r.Form.Get("letter")
@@ -279,6 +318,10 @@ func main() {
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
+	fi := http.FileServer(http.Dir("image")) // Serveur pour les images
+	http.Handle("/image/",http.StripPrefix("/image/", fi)) // Serveur pour les images
+
+
 	// Configuration des routes
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/guess", guessHandler)
@@ -287,5 +330,24 @@ func main() {
 	log.Println("Serveur démarré sur http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("Erreur serveur:", err)
+	}
+}
+
+func hangEv() {
+	switch game.RemainingTries {
+	case 6:
+		game.State = "./image/hangEv/vie.png" // VIE
+	case 5:
+		game.State = "./image/hangEv/vie-1.png"
+	case 4:
+		game.State = "./image/hangEv/vie-2.png"
+	case 3:
+		game.State = "./image/hangEv/vie-3.png"
+	case 2:
+		game.State = "./image/hangEv/vie-4.png"
+	case 1:
+		game.State = "./image/hangEv/vie-5.png"
+	case 0:
+		game.State = "./image/hangEv/perdu.png"
 	}
 }

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,12 +16,12 @@
     </div>
         <!-- Ajout des boutons de difficulté -->
         <div class="difficulty-buttons">
-            <a href="/?difficulty=facile" class="difficulty-btn {{if eq .Difficulty "facile"}}active{{end}}">Facile</a>
-            <a href="/?difficulty=moyen" class="difficulty-btn {{if eq .Difficulty "moyen"}}active{{end}}">Moyen</a>
-            <a href="/?difficulty=difficile" class="difficulty-btn {{if eq .Difficulty "difficile"}}active{{end}}">Difficile</a>
+            <a href="/?difficulty=facile" class='difficulty-btn {{if eq .Difficulty "facile"}}active{{end}}'>Facile</a>
+            <a href="/?difficulty=moyen" class='difficulty-btn {{if eq .Difficulty "moyen"}}active{{end}}'>Moyen</a>
+            <a href="/?difficulty=difficile" class='difficulty-btn {{if eq .Difficulty "difficile"}}active{{end}}'>Difficile</a>
         </div>
     </header>
-
+    <div class="game-wrapper">
     <div class="game-container">
         <div>Points de vie : {{.RemainingTries}}</div>
         <div class="difficulty-indicator">Niveau : {{.Difficulty}}</div>
@@ -38,9 +40,12 @@
             Mauvaises lettres : {{range .WrongLetters}}{{.}} {{end}}
         </div>
         {{end}}
-        {{end}}
+        
     </div>
-
+    <div class="hangman-image-container">
+        <img src={{ .State }} alt="Hangman image">
+    </div>
+</div>
     <!-- Pop-up de victoire -->
     <div id="victoryPopup" class="popup victory">
         <h2>BRAVO !</h2>
@@ -61,22 +66,62 @@
     <footer>
         <div class="footer">
         <p>&copy; 2024 hangMan. Tous droits réservés.</p>
-        <p>by. Damien, Eva, Guilhem et Lois</p>
+        <p>by. Damien, cuisine, Guilhem et Lois</p>
         </div>
     </footer>
 
-    <script>
-        {{if eq .GameStatus "gagne"}}
-        document.getElementById('victoryPopup').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-        {{end}}
+    {{end}}
 
+    <script> 
+        // Débogage du statut du jeu
+        console.log('Game Status:', '{{.GameStatus}}');
+
+        const a = document.getElementById('overlay');
+/*
+        function displayResult(win) {
+            if(win) {
+                console.log('Victoire détectée')
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.getElementById('victoryPopup').style.display = 'block';
+                    a.style.display = 'block';
+                });
+            }
+            else {
+                console.log('Défaite détectée');
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.getElementById('defeatPopup').style.display = 'block';
+                    a.style.display = 'block';
+                });
+            }
+        }
+*/
+        // Vérification de la victoire
+        {{ if eq .GameStatus "gagne" }}
+            displayResult(true)
+            
+            console.log('Victoire détectée');
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('victoryPopup').style.display = 'block';
+                a.style.display = 'block';
+            });
+            
+        {{end}}
+    
+        // Vérification de la défaite
         {{if eq .GameStatus "perdu"}}
-        document.getElementById('defeatPopup').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
+            console.log('perdu');
+            displayResult(false)
+            console.log('Défaite détectée');
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('defeatPopup').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            });
+            
         {{end}}
-
+    
         function closePopup(type) {
+            console.log('AAAAJIiejnjfgjern');
+            return
             const difficulty = '{{.Difficulty}}';
             document.getElementById(type + 'Popup').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
