@@ -1,0 +1,192 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"html/template"
+	"log"
+	"math/rand"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+)
+
+type HangmanGame struct {
+	Word            string
+	MaskedWord      string
+	RemainingTries  int
+	MaxTries        int
+	GuessedLetters  []string
+	WrongLetters    []string
+	GameStatus      string
+	RevealedLetter  string
+	GameInitialized bool
+}
+
+var game HangmanGame
+var wordList []string
+
+func loadWordsFromFile(filename string) []string {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatal("Erreur lors de l'ouverture du fichier de mots :", err)
+	}
+	defer file.Close()
+
+	var words []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		word := strings.TrimSpace(scanner.Text())
+		if word != "" {
+			words = append(words, word)
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal("Erreur lors de la lecture du fichier :", err)
+	}
+
+	return words
+}
+
+func initGame() {
+	rand.Seed(time.Now().UnixNano())
+
+	if !game.GameInitialized {
+		game.Word = wordList[rand.Intn(len(wordList))]
+		game.MaxTries = 6
+		game.RemainingTries = game.MaxTries
+		game.GuessedLetters = []string{}
+		game.WrongLetters = []string{}
+		game.MaskedWord = maskWord(game.Word)
+		game.GameStatus = "en_cours"
+
+		// Révéler une lettre aléatoire au début
+		game.RevealedLetter = revealRandomLetter()
+
+		game.GameInitialized = true
+	}
+}
+
+func maskWord(word string) string {
+	masked := make([]rune, len(word))
+	for i := range masked {
+		if word[i] == ' ' || word[i] == '_' {
+			masked[i] = rune(word[i])
+		} else {
+			masked[i] = '_'
+		}
+	}
+	return string(masked)
+}
+
+func revealRandomLetter() string {
+	// Sélectionne un index aléatoire de lettre à révéler
+	letterIndexes := []int{}
+	for i, char := range game.Word {
+		if char != ' ' && char != '_' {
+			letterIndexes = append(letterIndexes, i)
+		}
+	}
+
+	if len(letterIndexes) > 0 {
+		randomIndex := letterIndexes[rand.Intn(len(letterIndexes))]
+		revealedLetter := strings.ToLower(string(game.Word[randomIndex]))
+
+		// Mettre à jour le mot masqué avec la lettre révélée
+		maskedRunes := []rune(game.MaskedWord)
+		for i, char := range game.Word {
+			if strings.ToLower(string(char)) == revealedLetter {
+				maskedRunes[i] = char
+			}
+		}
+		game.MaskedWord = string(maskedRunes)
+
+		return revealedLetter
+	}
+
+	return ""
+}
+
+func handleGuess(letter string) {
+	letter = strings.ToLower(letter)
+
+	// Vérifier si la lettre a déjà été devinée
+	if contains(game.GuessedLetters, letter) {
+		return
+	}
+
+	game.GuessedLetters = append(game.GuessedLetters, letter)
+
+	if strings.Contains(strings.ToLower(game.Word), letter) {
+		updateMaskedWord(letter)
+
+		// Si toutes les lettres sont devinées, on gagne tous les points de vie
+		if game.MaskedWord == game.Word {
+			game.GameStatus = "gagne"
+			game.RemainingTries = game.MaxTries
+		}
+	} else {
+		game.RemainingTries--
+		// Ajouter aux lettres incorrectes
+		game.WrongLetters = append(game.WrongLetters, letter)
+
+		if game.RemainingTries == 0 {
+			game.GameStatus = "perdu"
+		}
+	}
+}
+
+func updateMaskedWord(letter string) {
+	masked := []rune(game.MaskedWord)
+	for i, char := range game.Word {
+		if strings.ToLower(string(char)) == letter {
+			masked[i] = char
+		}
+	}
+	game.MaskedWord = string(masked)
+}
+
+func contains(slice []string, item string) bool {
+	for _, v := range slice {
+		if v == item {
+			return true
+		}
+	}
+	return false
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		// Réinitialiser uniquement si le jeu est terminé
+		if game.GameStatus == "gagne" || game.GameStatus == "perdu" {
+			game.GameInitialized = false
+		}
+
+		initGame()
+	}
+
+	tmpl := template.Must(template.ParseFiles("index.html"))
+	tmpl.Execute(w, game)
+}
+
+func guessHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		r.ParseForm()
+		letter := r.Form.Get("letter")
+		handleGuess(letter)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+}
+
+func main() {
+	// Chargement du fichier de mots
+	wordList = loadWordsFromFile("words.txt")
+
+	http.HandleFunc("/", homeHandler)
+	http.HandleFunc("/guess", guessHandler)
+
+	fmt.Println("Serveur démarré sur http://localhost:8080")
+	http.ListenAndServe(":8080", nil)
+}
