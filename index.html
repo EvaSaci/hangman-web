@@ -28,7 +28,7 @@
         </div>
         <div class="masked-word">{{.Motsmasque}}</div>
         
-        {{if eq .GameStatus "en_cours"}}
+        {{if eq .GameStatus "en_cours"}}>
         <form class="guess-form" action="/guess" method="POST">
             <input type="text" name="letter" maxlength="1" required>
             <button type="submit">Deviner</button>
@@ -64,18 +64,18 @@
     <footer>
         <div class="footer">
         <p>&copy; 2024 hangMan. Tous droits réservés.</p>
-        <p>by. Damien, cuisine, Guilhem et Lois</p>
+        <p>by. Damien, Eva, Guilhem et Lois</p>
         </div>
     </footer>
 
     {{end}}
 
-    <script> 
+    <script> /*
         // Débogage du statut du jeu
         console.log('Game Status:', '{{.GameStatus}}');
 
         const a = document.getElementById('overlay');
-/*
+
         function displayResult(win) {
             if(win) {
                 console.log('Victoire détectée')
@@ -92,7 +92,7 @@
                 });
             }
         }
-*/
+
         // Vérification de la victoire
         {{ if eq .GameStatus "gagne" }}
             displayResult(true)
@@ -124,7 +124,7 @@
             document.getElementById(type + 'Popup').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
             window.location.href = '/?difficulty=' + difficulty;
-        }
+        } */
     </script>
 </body>
 </html>
