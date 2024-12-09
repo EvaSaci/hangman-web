@@ -27,6 +27,7 @@ type HangmanGame struct {
 	GameInitialized bool     // Indicateur pour vérifier si le jeu est initialisé
 	Difficulty      string   // Niveau de difficulté du jeu
 	State           string
+	//revealword      string // bite
 }
 
 // Variables globales pour le jeu
@@ -245,42 +246,17 @@ func contains(slice []string, item string) bool {
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	// Gestion de la requête GET
 	if r.Method == "GET" {
-
 		hangEv()
-		fmt.Println("state")
-		fmt.Println(game.State)
-		fmt.Println(game.RemainingTries)
+
 		// Récupération du niveau de difficulté
 		difficulty := r.URL.Query().Get("difficulty")
 
-		// Si aucune difficulté n'est spécifiée
-		if difficulty == "" {
-			// Si un jeu est déjà en cours, conserver son niveau de difficulté
-			if game.GameInitialized {
-				difficulty = game.Difficulty
-			} else {
-				// Sinon, utiliser le niveau moyen par défaut
-				difficulty = "moyen"
-			}
-		}
-		log.Printf("Game Status: %s", game.GameStatus)
-		log.Printf("Difficulty: %s", difficulty)
-		// Vérification pour réinitialiser le jeu
+		// Réinitialisation du jeu si nécessaire
 		if !game.GameInitialized ||
 			game.GameStatus == "gagne" ||
 			game.GameStatus == "perdu" ||
-			game.Difficulty != difficulty {
+			(difficulty != "" && game.Difficulty != difficulty) {
 			initGame(difficulty)
-		}
-		// In your handleGuess function
-		if game.Motsmasque == game.Mots {
-			game.GameStatus = "gagne" // Ensure it's lowercase
-			game.RemainingTries = game.MaxTries
-		}
-
-		// And when the player loses
-		if game.RemainingTries == 0 {
-			game.GameStatus = "perdu" // Ensure it's lowercase
 		}
 	}
 
@@ -318,9 +294,8 @@ func main() {
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	fi := http.FileServer(http.Dir("image")) // Serveur pour les images
-	http.Handle("/image/",http.StripPrefix("/image/", fi)) // Serveur pour les images
-
+	fi := http.FileServer(http.Dir("image"))                // Serveur pour les images
+	http.Handle("/image/", http.StripPrefix("/image/", fi)) // Serveur pour les images
 
 	// Configuration des routes
 	http.HandleFunc("/", homeHandler)
