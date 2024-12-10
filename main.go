@@ -311,7 +311,7 @@ func main() {
 func hangEv() {
 	switch game.RemainingTries {
 	case 6:
-		game.State = "./image/hangEv/vie.png" // VIE
+		game.State = "./image/hangEv/perdu.png" // VIE
 	case 5:
 		game.State = "./image/hangEv/vie-1.png"
 	case 4:
@@ -323,6 +323,6 @@ func hangEv() {
 	case 1:
 		game.State = "./image/hangEv/vie-5.png"
 	case 0:
-		game.State = "./image/hangEv/perdu.png"
+		game.State = "./image/hangEv/vie.png"
 	}
 }
