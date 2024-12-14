@@ -28,7 +28,7 @@
         </div>
         <div class="masked-word">{{.Motsmasque}}</div>
         
-        {{if eq .GameStatus "en_cours"}}>
+        {{if eq .GameStatus "en_cours"}}
         <form class="guess-form" action="/guess" method="POST">
             <input type="text" name="letter" maxlength="1" required>
             <button type="submit">Deviner</button>
